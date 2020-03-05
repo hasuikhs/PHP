@@ -1,5 +1,8 @@
 # 01_PHP_Intro
 
+<div style="text-align: right"><b>작 성 일 : 20.03.05.</b></div>
+<div style="text-align: right"><b>작 성 자 : 김 한 석 &nbsp&nbsp</b></div>
+
 ## 1. PHP?
 
 - **PHP(Professional Hypertext Preprocessor)**는 수많은 HTML로 만든 웹 페이지를 정적으로 동작하는 것이 아닌 **사용자 정의로 동적인 웹 애플리케이션을 만들기 위한 서버 사이드 스크립트 언어**
@@ -89,6 +92,3 @@
   	$float = 1.5;
   ?>
   ```
-
-  
-
