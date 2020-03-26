@@ -154,5 +154,41 @@ echo 'Hello World';
   $arr = array("apple" => 1000, "banana" => 2000, "orange" => 1500);
   ```
 
-  
+## 6. 클래스
+
+### 6.1 클래스와 인스턴스
+
+```php
+class MyFileObject {
+    function isFile() {
+        return is_file('data.txt');
+    }
+}
+
+$file = new MyFileObject();
+var_dump($file->isFile());	// 클래스의 변수나 메서드 접근
+```
+
+### 6.2 생성자
+
+```php
+class MyFIleObject {
+    function __construct($fname) {
+        $this->filename = fname;
+    }
+    
+    function isFile() {
+        return is_file($this->filename);
+    }
+}
+
+$file = new MyFileObject('data.txt');
+
+var_dump($file->isFile());
+var_dump($file->filename);	// php는 변수를 따로 선언하지 않아도 생성자의 $this로 접근 가능
+```
+
+
+
+
 
