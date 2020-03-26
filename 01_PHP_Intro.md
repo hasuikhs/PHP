@@ -22,33 +22,26 @@
 - 더하기
 
   ```php
-  <?php
-      echo 1 + 1;
-  ?>
+  echo 1 + 1;
+  
   ```
-
+  
 - 빼기
 
   ```php
-  <?php
-      echo 1 - 1;
-  ?>
+  echo 1 - 1;
   ```
-
+  
 - 곱하기
 
   ```php
-  <?php
-      echo 10 * 2;
-  ?>
+  echo 10 * 2;
   ```
-
+  
 - 나누기
 
   ```php
-  <?php
-      echo 10 / 2;
-  ?>
+  echo 10 / 2;
   ```
 
 ### 3.2 문자
@@ -56,9 +49,7 @@
 #### 3.2.1 문자열
 
 ```php
-<?php
-    echo 'Hello World';
-?>
+echo 'Hello World';
 ```
 
 #### 3.2.2 큰 따옴표("") vs 작은 따옴표('')
@@ -66,19 +57,15 @@
 - 큰 따옴표("")를 쓰면 변수를 치환해서 출력해 준다.
 
   ```php
-  <?php
-      $name = PHP;
-  	echo "Hello World $name";	// Hello World PHP
-  ?>
+  $name = PHP;
+  echo "Hello World $name";	// Hello World PHP
   ```
-
+  
 - 작은 따옴표('')를 쓰면 문자열을 그대로 출력해 준다.
 
   ```php
-  <?php
-      $name = PHP;
-  	echo 'Hello World $name';	// Hello World $name
-  ?>
+  $name = PHP;
+  echo 'Hello World $name';	// Hello World $name
   ```
 
 ## 4. 변수
@@ -86,9 +73,86 @@
 - PHP에서는 데이터 타입을 적지 않고 `$`로 변수명을 정해서 사용 가능하다.
 
   ```php
-  <?php
-      $name = PHP;
-  	$int = 1;
-  	$float = 1.5;
-  ?>
+  $name = PHP;
+  $int = 1;
+  $float = 1.5;
   ```
+
+## 5. 배열
+
+### 5.1 1차원 배열
+
+- 배열 생성
+
+  ```php
+  $arr = array();
+  ```
+
+- 배열 입력
+
+  ```php
+  $arr[0] = "apple";
+  $arr[1] = "banana";
+  $arr[2] = "orange";
+  ```
+
+- 생성과 동시에 초기화
+
+  ```php
+  $arr = array("apple", "banana", "orange");
+  ```
+
+### 5.2 다차원 배열
+
+- 배열 생성
+
+  ```php
+  $arr = array(
+  	array(),
+      array(),
+      ...
+  );
+  ```
+
+- 배열 입력
+
+  ```php
+  $arr[0][0] = "apple";
+  $arr[0][1] = "korea";
+  $arr[0][2] = 1000;
+  
+  $arr[1][0] = "banana";
+  $arr[1][1] = "philippines";
+  $arr[1][2] = 2000;
+  ```
+
+- 생성과 동시에 초기화
+
+  ```php
+  $arr = array(
+  	array("apple", "korea", 1000),
+      array("banana", "philippines", 2000)
+  );
+  ```
+
+### 5.3 연관 배열
+
+- PHP에서는 숫자뿐만 아니라 문자열도 배열 요소의 인덱스로 사용 가능
+
+- 배열 참조
+
+  ```php
+  $arr = array();
+  $arr["apple"] = 1000;
+  $arr["banana"] = 2000;
+  $arr["orange"] = 1500;
+  ```
+
+- 생성과 동시에 초기화
+
+  ```php
+  $arr = array("apple" => 1000, "banana" => 2000, "orange" => 1500);
+  ```
+
+  
+
