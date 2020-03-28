@@ -54,7 +54,7 @@ $sheetsCount = $oSpreadsheet->getSheetCount();
 ### 2.3 Sheet 정보
 
 ```php
-for ($sheet = 0; $sheet < $sheetsCount; $sheet++){
+for($sheet = 0; $sheet < $sheetsCount; $sheet++){
 	$oSpreadsheet->setActiveSheetIndex($sheet);
 	$oSheet = $oSpreadsheet->getActiveSheet();
 	$sheetName = $oSheet->getTitle();
@@ -119,7 +119,7 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
     ```php
     function makeColumns() {
         $aColumns = array();
-        for ($i = 0; $i < 26; $i++){
+        for($i = 0; $i < 26; $i++){
             $aColumns[] = chr(65 + $i);
         }
     
@@ -148,7 +148,7 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
   $maxIndex = $hColumns[$highestColumn];
   $curRow = 3;	// 예제 Excel 파일 표 데이터의 header가 존재하는 행
   
-  for($i = 1; $i <= $maxIndex; $i++){
+  for($i = 1; $i <= $maxIndex; $i++){	// Excel Data는 1부터 시작(0이 아님 주의)
       $strCellPos = $aColumns[$i].$curRow;	// B3, C3, D3
       $val = $oSheet->getCell($strCellPos)->getValue();	// 해당 Cell의 값
       $aDataHeader[] = $val;
@@ -168,182 +168,165 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
   }
   ```
 
+### 2.6 표 데이터 Value 구하기
 
+- Excel에 입력된 날짜를 SQL의 Date 타입과 맞춰주기 위해서 변환하는 함수 준비
 
-```php
-<?php
-/**
- * @FileName : class.LenovoBrandParserV1.php
- * @Date : 2020-03-12
- * @작성자 : Young
- * @변경이력 :
- * @프로그램 설명 : 
-    2020-03-23: 201901 ~ 201906 처리
- */
+  ```php
+  function fromExcelToLinux($excel_time){
+      return ($excel_time - 25569) * 86400;
+  }
+  ```
 
-ini_set('memory_limit', '-1');
+- Value 읽어오기
 
-require_once __DIR__ . '/../vendor/autoload.php';
+  ```php
+  $aDataValues = array();	// Value의 행을 담을 전체 배열 생성
+  $curRow++;	// 위에서 $curRow는 Header로 쓰였고, 그 이후는 Value 이므로 증가시킨 이후 사용
+  
+  while ($curRow <= $highestRow) {
+      $aData = array();	// 각 행의 Value를 담기 위한 임시 배열 생성
+      
+      // 위의 Header를 구하는 로직과 같음
+      for($i = 1; $i <= $maxIndex; $i++) {
+          $strCellPos = $aColumns[$i].$curRow;
+          $val = $oSheet->getCell($strCellPos)->getValue();
+          
+          if($i == 1) {	// 첫번째 열 날짜 처리 필요
+              $val = fromExcelToLinux($val);
+              $val = date('Y-m-d', $val);
+          }
+          $aData[] = $val;
+      }
+      $aDataValues[] = $aData;
+      $curRow++;
+  }
+  
+  var_dump($aDataValues);
+  ```
 
-$excelFileName = 'test01.xlsx';
-$oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFileName);
-
-$sheetsCount = $oSpreadsheet->getSheetCount();
-
-for ($sheet = 0 ; $sheet < $sheetsCount; $sheet++) {
-    $oSpreadsheet->setActiveSheetIndex($sheet);
-    $oSheet = $oSpreadsheet->getActiveSheet();
-    $sheetName = $oSheet->getTitle();
-    $sheetState = $oSheet->getSheetState();
-
-    echo $sheet . "\t" . $sheetName . "\t" . $sheetState . PHP_EOL;
-
-    $highestRow     = $oSheet->getHighestRow();
-    $highestColumn  = $oSheet->getHighestColumn();
-
-    echo "Parse:" . $highestRow ."\t". $highestColumn. PHP_EOL;
- 
-    $aColumns = makeColumns();
-    $hColumns = array_flip($aColumns);
-
-    $aDataHeader = array();
-
-    $maxIndex = $hColumns[$highestColumn];
-    $curRow = 3;
-    for($i = 1; $i <= $maxIndex; $i++){
-        $strCellPos = $aColumns[$i].$curRow;
-        $val = $oSheet->getCell($strCellPos)->getValue();
-        $aDataHeader[] = $val;
+  ```
+  ...
+  [16] =>
+    array(3) {
+      [0] =>
+      string(10) "2020-01-17"
+      [1] =>
+      string(20) "=RANDBETWEEN(0, 100)"
+      [2] =>
+      string(20) "=RANDBETWEEN(0, 100)"
     }
-    var_dump($aDataHeader);
-}
+  }
+  ```
 
-function makeColumns() {
-    $aColumns = array();
-    for ($i = 0; $i < 26; $i++)
-        $aColumns[] = chr(65 + $i);
+### 2.7 SQL Data화 하기
 
-    return $aColumns;
-}
-?>
-```
+- 먼저 일치 시켜줄 Column명 배열 선언
 
-```php
-<?php
-/**
- * @FileName : class.LenovoBrandParserV1.php
- * @Date : 2020-03-12
- * @작성자 : Young
- * @변경이력 :
- * @프로그램 설명 : 
-    2020-03-23: 201901 ~ 201906 처리
- */
+  ```php
+  $aDictionary = array(
+  	'Date' => 'ad_date',
+      '필드1' => 'f1',
+      '필드2' => 'f2'
+  );
+  ```
 
-ini_set('memory_limit', '-1');
+- 함수 생성
 
-require_once __DIR__ . '/../vendor/autoload.php';
-$excelFileName = 'test01.xlsx';
+  ```php
+  function printSQLData($aDataHeader, $aDataValues){
+      global $aDictionary;	// 메인에서 선언한 $aDictionary 배열 호출
+      
+      $aHeader = array();
+      foreach($aDataHeader as $h)
+          $aHeader[] = $aDictionary[$h];
+      
+      $strField = implode(',', $aFields);	// 배열을 하나의 문자열로 변환
+      
+      $strValues = array();
+      foreach($aDataValues as $row) {
+          $strValue = "'" . implode("', '", $row) . "'";
+          $arrValues[] = "(" . $strValue . ")";
+      }
+      
+      var_dump($strField ."\t" . implode(',', $arrValues) . PHP_EOL);
+  }
+  ```
 
-$oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFileName);
+  ```
+  string(1086) "ad_date,f1,f2	('2020-01-01', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-02', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-03', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-04', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-05', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-06', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-07', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-08', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 1"...
+  ```
 
-$sheetsCount = $oSpreadsheet->getSheetCount();
-echo 'sheetsCount:' . $sheetsCount .PHP_EOL;
-$aColumns = makeColumns();
+## 3. Refactoring
 
-$hColumns = array_flip($aColumns);
-$aDictionary = array(
-    'Date' =>'ad_date',
-    '필드1'=>'f1',
-    '필드2'	=>'f2'
-);
-for ($sheet = 0; $sheet < $sheetsCount; $sheet++) {
-    $oSpreadsheet->setActiveSheetIndex($sheet);
-    $oSheet = $oSpreadsheet->getActiveSheet();
-    $sheetName = $oSheet->getTitle();
-    $sheetState = $oSheet->getSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+- 메인 코드
 
-    echo $sheet . "\t" . $sheetName . "\t" . $sheetState . PHP_EOL;
+  ```php
+  ini_set('memory_limit', '-1');	// 메모리 제한 해제
+  
+  require_once __DIR__ . '/vender/autoload.php';	// Java의 import와 비슷
+  
+  $excelFileName = 'test01.xlsx';
+  $oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFileName);
+  
+  $sheetsCount = $oSpreadsheet->getSheetCount();
+  
+  $aColumns = makeColumns();
+  $hColumns = array_flip($aColumns);
+  
+  for($sheet = 0; $sheet < $sheetsCount; $sheet++) {
+      $oSpreadsheet->setActiveSheetIndex($sheet);
+      $oSheet = $oSpreadsheet->getActiveSheet();
+  
+      parse($oSheet);
+  }
+  ```
 
-    parse($oSheet);
-}
+- parse 함수
 
-function parse($oSheet) {
-    global $aColumns, $hColumns;
-    $aDataColumns = array();
-    $highestRow     = $oSheet->getHighestRow(); // 마지막 행
-    $highestColumn  = $oSheet->getHighestColumn(); // 마지막 컬럼
+  ```php
+  function parse($oSheet) {
+      global $aColumns, $hColumns;	// 메인에서 쓰는 변수 호출
+      
+      $highestRow = $oSheet->getHighestRow();
+      $highestColumn = $oSheet->getHighestColumn();
+      
+      $maxIndex = $hColumns[$highestColumn];
+      
+      $aDataHeader = array();
+      $curRow = 3;
+      
+      for($i = 1; $i <= $maxIndex; $i++) {
+      	$strCellPos = $aColumns[$i].$curRow;
+      	$val = $oSheet->getCell($strCellPos)->getValue();
+      	$aDataHeader[] = $val;
+  	}
+      
+      $DataValues = array();
+      $curRow++;
+      while($curRow <= $highestRow) {
+          $aData = array();
+          for($i=1;$i<=$maxIndex;$i++) {
+              $strCellPos = $aColumns[$i].$curRow;
+              $val = $oSheet->getCell($strCellPos)->getValue();
+              
+              if ($i==1) {
+                  $val = fromExcelToLinux($val);
+                  $val = date('Y-m-d', $val);
+              }
+              $aData[] = $val;
+          }
+          $aDataValues[] = $aData;
+          $curRow++;
+      }
+      
+      printSQLDdata($aDataHeader, $aDataValues);
+  }
+  ```
 
-    echo "Parse:" . $highestRow ."\t". $highestColumn. PHP_EOL;
-    $maxIndex = $hColumns[$highestColumn];
-    // Date
-    $curRow=3;
-    for($i=1;$i<=$maxIndex;$i++) 
-    {
-        $strCellPos = $aColumns[$i].$curRow;
-        $val = $oSheet->getCell($strCellPos)->getValue();
-        $aDataColumns[] = $val;
-    }
-    
-    $aDataValues =array();
-    $curRow++;
-    while($curRow<=$highestRow) {
-        $aData = array();
-        for($i=1;$i<=$maxIndex;$i++) 
-        {
-            $strCellPos = $aColumns[$i].$curRow;
-            $val = $oSheet->getCell($strCellPos)->getValue();
-            if ($i==1) {
-                $val = fromExcelToLinux($val);
-                $val = date('Y-m-d', $val);
-            }
-            $aData[] = $val;
-        }
-        $aDataValues[] = $aData;
-        $curRow++;
-    }
-    
-    printSQLData($aDataColumns, $aDataValues);
-}
+  
 
-function printData($aDataColumns, $aDataValues)
-{
-    echo implode("\t", $aDataColumns) . PHP_EOL;
 
-    foreach ($aDataValues as $row)
-        echo implode("\t", $row) . PHP_EOL;
-}
-
-function printSQLData($aDataColumns, $aDataValues)
-{
-    global $aDictionary;
-    echo implode("\t", $aDataColumns) . PHP_EOL;
-    $aFields = array();
-    foreach ($aDataColumns as $f)
-        $aFields[] = $aDictionary[$f];
-    
-    $strField = implode(',', $aFields);
-    $arrValues = array();
-    foreach ($aDataValues as $row) 
-    {
-        $strValue = "'" . implode("', '", $row) . "'";
-        //echo $strField ."\t" . $strValue . PHP_EOL;
-        $arrValues[] = "(" . $strValue . ")";
-    }
-    echo $strField ."\t" . implode(',', $arrValues) . PHP_EOL;
-}
-
-function makeColumns() {
-    $aColumns = array();
-    for ($i = 0; $i < 26; $i++)
-        $aColumns[] = chr(65 + $i);
-
-    return $aColumns;
-}
-
-function fromExcelToLinux($excel_time){
-    return ($excel_time - 25569) * 86400;
-}
-```
 
 
 
