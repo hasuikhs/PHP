@@ -241,7 +241,7 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
       foreach($aDataHeader as $h)
           $aHeader[] = $aDictionary[$h];
       
-      $strField = implode(',', $aFields);	// 배열을 하나의 문자열로 변환
+      $strField = implode(',', $aHeader);	// 배열을 하나의 문자열로 변환
       
       $strValues = array();
       foreach($aDataValues as $row) {
@@ -254,7 +254,7 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
   ```
 
   ```
-  string(1086) "ad_date,f1,f2	('2020-01-01', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-02', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-03', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-04', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-05', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-06', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-07', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 100)'),('2020-01-08', '=RANDBETWEEN(0, 100)', '=RANDBETWEEN(0, 1"...
+  string(875) "ad_date,f1,f2	('2020-01-01', '10', '124'),('2020-01-02', '14', '112'),('2020-01-03', '27', '195'),('2020-01-04', '16', '175')," ...
   ```
 
 ## 3. Refactoring
