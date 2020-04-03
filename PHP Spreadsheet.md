@@ -302,7 +302,7 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
       	$aDataHeader[] = $val;
   	}
       
-      $DataValues = array();
+      $aDataValues = array();
       $curRow++;
       while($curRow <= $highestRow) {
           $aData = array();
@@ -324,9 +324,202 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
   }
   ```
 
-  
 
+## 4. 클래스화 & DB 입력
 
+### 4.1 실행 부분
+
+```php
+<?php
+
+ini_set('memory_limit', '-1');
+
+require_once __DIR__ . '/../vendor/autoload.php';
+include __DIR__ . '/ExcelParserPrototype.php';
+include __DIR__ . '/DBMapper.php';
+include __DIR__ . '/util.php';
+
+$aColumns = makeColumns();
+$hColumns = array_flip($aColumns);
+
+$aDictionary = array(
+    'Date' => 'ad_date',
+    '필드1' => 'f1',
+    '필드2' => 'f2'
+);
+
+$excelFileName = 'test01.xlsx';
+
+$curRow = 3;
+
+$oParser = new ExcelParserPrototype($excelFileName, new DBMapper());
+$oParser->parse();
+
+?>
+```
+
+### 4.2 Util
+
+```php
+<?php
+    
+function makeColumns() {
+    $aColumns = array();
+    for ($i = 0; $i < 26; $i++)
+        $aColumns[] = chr(65 + $i);
+
+    return $aColumns;
+}
+
+function fromExcelToLinux($excel_time){
+    return ($excel_time - 25569) * 86400;
+}
+
+?>
+```
+
+### 4.3 Excel Parsing Class
+
+#### 4.3.1 클래스 선언
+
+```php
+class ExcelParserPrototype {
+    var $oSpreadsheet;	// Excel 파일을 받는 변수 선언
+    var $excelFileName;	// Excel 파일명을 받는 변수 선언
+    var $oMapper;		// DB 연결 클래스 변수 선언
+}
+```
+
+#### 4.3.2 생성자
+
+```php
+function __construct($excelFileName, $oMapper) {
+    $this->excelFileName = $excelFileName;
+    $this->oMapper = $oMapper;
+}
+```
+
+#### 4.3.3 함수
+
+##### 4.3.3.1 메인 함수 - Parse()
+
+```php
+function parse() {
+    $this->oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($this->excelFileName);
+   	$sheetsCount = $this->oSpreadsheet->getSheetCount();
+
+   	for ($sheet = 0; $sheet < $sheetsCount; $sheet++) {
+    	$this->oSpreadsheet->setActiveSheetIndex($sheet);
+     	$oSheet = $this->oSpreadsheet->getActiveSheet();
+     	$sheetName = $oSheet->getTitle();
+     	$sheetState = $oSheet->getSheetState();
+
+	    $this->parseSummary($oSheet);
+   	}
+}
+```
+
+##### 4.3.3.2 시트 배열화 - parseSummary(`$oSheet`)
+
+```php
+    function parseSummary($oSheet) {
+        global $aColumns, $hColumns, $curRow;
+
+        $aDataHeader = array();
+        $highestRow = $oSheet->getHighestRow();
+        $highestColumn = $oSheet->getHighestColumn();
+
+        $maxIndex = $hColumns[$highestColumn];
+
+        $aDataHeader = $this->getColumns($oSheet, $maxIndex);
+
+        $aDataValues = array();
+        $curRow++;
+
+        while ($curRow <= $highestRow) {
+            $aData = array();
+            for ($i = 1; $i <= $maxIndex; $i++) {
+                $strCellPos = $aColumns[$i] . $curRow;
+                $val = $oSheet->getCell($strCellPos)->getValue();
+                if ($i == 1) {
+                    $val = fromExcelToLinux($val);
+                    $val = date('Y-m-d', $val);
+                }
+                $aData[] = $val;
+            }
+            $aDataValues[] = $aData;
+            $curRow++;
+        }
+        $this->InsertSummary($aDataHeader, $aDataValues);
+    }
+```
+
+##### 4.3.3.3 getColumns(`$oSheet`, `$maxIndex`)
+
+```php
+function getColumns($oSheet, $maxIndex) {
+    global $curRow, $aColumns;
+
+    $aDataHeader = array();
+    for ($i = 1; $i <= $maxIndex; $i++) {
+        $strCellPos = $aColumns[$i] . $curRow;
+        $val = $oSheet->getCell($strCellPos)->getValue();
+        $aDataHeader[] = $val;
+    }
+    return $aDataHeader;
+}
+```
+
+##### 4.3.3.4 배열화된 데이터 DB에 넘기기 - insertSummary(`$aDataHeader`, `$aDataValues`)
+
+```php
+function insertSummary($aDataHeader, $aDataValues) {
+	global $aDictionary;
+
+    $aRows = array();
+    $aCols = array();
+        
+    foreach ($aDataHeader as $col)
+        $aCols[] = $aDictionary[$col];
+
+    $strHeaders = '(' . implode(', ', $aCols) . ')';
+        
+    foreach ($aDataValues as $row)
+        $aRows[] = '(\'' . implode('\', \'', $row) . '\')';
+
+    $this->oMapper->insertSummary($strHeaders, $aRows);
+}
+```
+
+### 4.4 DB Connect Class
+
+```php
+<?php
+
+class DBMapper
+{  
+    public $db;
+    
+    public function __construct() {
+        $dsn = "mysql:host=127.0.0.1;port=3306;dbname=test;charset=utf8";
+        try {
+            $db = new PDO($dsn, "root", "root");
+            $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
+            echo $e->getMessage();
+        }
+        $this->db = $db;
+    }
+
+    public function insertSummary($strHeaders, $aRows) {
+        $query = " INSERT INTO test_tbl " . $strHeaders . " VALUES " . implode(', ', $aRows);
+        $this->db->query($query);
+    }
+}
+
+?>
+```
 
 
 
