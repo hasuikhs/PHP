@@ -39,14 +39,15 @@
 - cmd창 열고 
 
   ```bash
-  httpd -k install
+  $ httpd -k install
   ```
 
 ## 2. PHP 7.4.4 설치
 
 - [PHP 7.4.4 다운로드](https://windows.php.net/download/)
-  - Binaries and sources Releases에서 원하는 버전, 비트, Thread safe 후 Zip 파일 다운로드
-
+  
+- Binaries and sources Releases에서 원하는 버전, 비트, Thread safe 후 Zip 파일 다운로드
+  
 - 원하는 설치 경로에 압축 해제
 
 - `php.ini-production` 파일 수정
@@ -78,6 +79,4 @@
   ```bash
   $ httpd -k restart
   ```
-
-  
 
