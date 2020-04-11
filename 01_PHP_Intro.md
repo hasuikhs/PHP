@@ -23,7 +23,6 @@
 
   ```php
   echo 1 + 1;
-  
   ```
   
 - 빼기
@@ -186,6 +185,33 @@ $file = new MyFileObject('data.txt');
 
 var_dump($file->isFile());
 var_dump($file->filename);	// php는 변수를 따로 선언하지 않아도 생성자의 $this로 접근 가능
+```
+
+### 6.3 상속
+
+```php
+<?php
+class Animal{
+    function run(){
+        print('running...<br>');
+    }
+    function breathe(){
+        print('breathing...<br>')
+    }  
+}    
+
+class Human extends Animal{
+    function think(){
+        print('thinking...<br>');
+    }
+    function talk(){
+        print('talking...<br>')
+    }
+}
+$human = new Human();
+$human->run();
+$human->think();
+?>
 ```
 
 
