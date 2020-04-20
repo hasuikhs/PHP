@@ -1,7 +1,7 @@
 <?php
-session_start();
+session_start();    // 추가
 
-if ($_SESSION['user_id'] == ''){
+if ($_SESSION['user_id'] == ''){    // 세션의 user_id가 공백이면 login.php로 이동
     header('Location: login.php');
     exit;
 }
