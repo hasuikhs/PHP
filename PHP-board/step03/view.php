@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if ($_SESSION['user_id']==''){  // 추가(step03)
+    header('Location: login.php');
+    exit;
+}
+
 $db_host = "127.0.0.1";
 $db_user = "root";
 $db_pass = "root";
