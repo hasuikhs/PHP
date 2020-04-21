@@ -1,0 +1,1 @@
+공통된 DB 연결 부분(list, view) inc.common.php로 분리
