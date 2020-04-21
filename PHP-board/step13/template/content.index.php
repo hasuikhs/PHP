@@ -1,0 +1,1 @@
+<a href="index.php?mode=list">목록</a>
