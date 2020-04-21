@@ -1,0 +1,1 @@
+<a href="list.php">목록</a>
