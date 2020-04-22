@@ -46,7 +46,7 @@
 - PHP가 설치된 폴더에서 CMD 실행 후
 
   ```bash
-  $ php-cgi -b 127.0.0.1:9000 -c D:\Dev\PHP\php.ini
+  $ php-cgi -b 127.0.0.1:9000 -c php.ini
   ```
 
   - **PHP가 C 드라이브가 아닌 다른 드라이브에 설치되었다면 -c 뒤의 옵션을 넣어주어야 함**
