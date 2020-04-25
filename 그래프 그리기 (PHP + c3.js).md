@@ -26,18 +26,19 @@
 
   ```php
   <?php
+  // ps : 기간시작, pe : 기간마지막
   function getClickData($conn, $ps = 0, $pe = 0)
   {
       $query = " SELECT ad_date, click 
                  FROM tb_amp_media_summary 
                  WHERE media='total'";
   
+      // ps, pe가 들어올 경우 실행되는 부분
       if ($ps != null && $pe != null) {
           $query = $query . " AND ad_date BETWEEN '" . $ps . "' AND '" . $pe . "' ";
       }
       $query = $query . " ORDER BY no";
       $result = mysqli_query($conn, $query);
-  
       
       if ($result) {
           while ($row = mysqli_fetch_assoc($result)) {
@@ -56,8 +57,8 @@
   
       return $aData;
   }
-  ```
-
+```
+  
   - `function($value1, $value2 = 0, $value3 = 0)`
     - 매개 변수를 선택적으로 지정하려면 해당 변수에서 `$변수 = 0`으로 처리
   - `array_unshift($array, value)`
@@ -90,6 +91,8 @@ include __DIR__ . '/./include/inc.common.php';
     <div id="chart" />
     <script src="function.js"></script>
     <script>
+    	// <?=는 <?php echo로 인식
+    	// PHP에서 java 스크립트로 내올때는 echo를 붙여야지 원하는 데이터를 받을 수 있음
         var x_data = <?= json_encode($aData['date']); ?>;
         var click_data = <?= json_encode($aData['click']); ?>;
 
