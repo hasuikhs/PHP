@@ -50,6 +50,21 @@
       return unshiftLabel($aRet);
   }
   
+  function drawMAL($aRet, $day = 0)
+  {
+      $aSize = count($aRet);
+      for ($i = 0; $i < $aSize - ($day - 1); $i++) {
+          $aTmp = array_slice($aRet, $i, $day);
+          $aMAL[] = round(array_sum($aTmp) / $day);
+      }
+  
+      for ($i = 0; $i < $day - 1; $i++) {
+          array_unshift($aMAL, null);
+      }
+      
+      return $aMAL;
+  }
+  
   function unshiftLabel($aData)
   {
       array_unshift($aData['date'], "x");
@@ -57,14 +72,13 @@
   
       return $aData;
   }
-```
+  ```
   
   - `function($value1, $value2 = 0, $value3 = 0)`
     - 매개 변수를 선택적으로 지정하려면 해당 변수에서 `$변수 = 0`으로 처리
   - `array_unshift($array, value)`
     - `$array`배열의 맨 앞에 `value`를 넣을 수 있다.
     - `c3.js`에서는 데이터 배열의 처음에 라벨을 받음으로 처리 필요
-
 ## 3. `graph.php`
 
 ```php
