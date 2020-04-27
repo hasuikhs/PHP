@@ -40,9 +40,11 @@ require_once '설치 경로/vendor/autoload.php';	// 위의 설치 경로 불러
 
 ### 2.1 File Load
 
+- 파일명 뿐 아니라 파일 디렉토리 또한 포함 가능
+
 ```php
-$excelFileName = 'test.xlsx';
-$oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFileName);
+$excelFilePath = 'test.xlsx';
+$oSpreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFilePath);
 ```
 
 ### 2.2 Sheet Count
@@ -212,12 +214,14 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
       [0] =>
       string(10) "2020-01-17"
       [1] =>
-      string(20) "=RANDBETWEEN(0, 100)"
+      string(20) "=RANDBETWEEN(0, 100)"	
       [2] =>
       string(20) "=RANDBETWEEN(0, 100)"
     }
   }
   ```
+  
+  - 엑셀의 함수 값을 숫자 값으로 바꾸려면 해당 범위나 값을`F2` 누르고 `F9`를 누르면 원하는 값으로 변환이 된다.
 
 ### 2.7 SQL Data화 하기
 
