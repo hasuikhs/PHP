@@ -1,0 +1,24 @@
+<html>
+<button id="btn">버튼</button>
+<p id="text"></p>
+<script>
+    window.onload = function () {
+        let btn = document.getElementById("btn")
+        const idText = document.getElementById("text")
+        btn.addEventListener("click", clickBtn)
+        btn.addEventListener("mouseover", overBtn)
+        btn.addEventListener("mouseleave", leaveBtn)
+        function clickBtn() {
+            idText.append("마우스가 버튼을 클릭!")
+        }
+        function overBtn() {
+            idText.append("마우스가 버튼 위로 진입!")
+        }
+        function leaveBtn() {
+            idText.append("마우스가 버튼 위를 탈출!")
+        }
+    }
+    
+</script>
+
+</html>
