@@ -16,7 +16,6 @@
   <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
   ```
 
-- [소스코드 다운](https://github.com/nhn/tui.grid/releases)
 
 ## 1. Grid 생성
 
@@ -104,7 +103,7 @@ const grid = new Grid({
 - 컬럼 모델을 정의했다면 Grid에 데이터를 입력 가능
 
 ```javascript
-const data = [
+const gridData = [
 	{
 		id: '10012',
         city: 'Seoul',
@@ -149,4 +148,67 @@ const data = [
   grid.resetData(data)
   ```
 
-  
+
+## 4. 소스 코드
+
+```html
+<head>
+    <!-- grid -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
+</head>
+
+<body>
+    <div id="grid"></div>
+</body>
+<script>
+    const gridData = [
+        {
+            id: '10012',
+            city: 'Seoul',
+            country: 'South Korea'
+        },
+        {
+            id: '10013',
+            city: 'Tokyo',
+            country: 'Japan'
+        },
+        {
+            id: '10014',
+            city: 'London',
+            country: 'England'
+        },
+        {
+            id: '10015',
+            city: 'Ljubljana',
+            country: 'Slovenia'
+        },
+        {
+            id: '10016',
+            city: 'Reykjavik',
+            country: 'Iceland'
+        }
+    ];
+
+    const grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        data: gridData,
+        scrollX: false,
+        scrollY: false,
+        columns: [{
+                header: 'ID',
+                name: 'id'
+            },
+            {
+                header: 'CITY',
+                name: 'city'
+            },
+            {
+                header: 'COUNTRY',
+                name: 'country'
+            }
+        ]
+    });
+</script>
+```
+

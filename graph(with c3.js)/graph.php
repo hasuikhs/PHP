@@ -1,6 +1,6 @@
 <?php
-
 include __DIR__ . '/./include/inc.common.php';
+
 
 ?>
 <html>
