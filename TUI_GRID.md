@@ -17,7 +17,7 @@
   ```
 
 
-## 1. Grid 생성
+## 1. Grid 기본
 
 ### 1.1 생성하기
 
@@ -62,7 +62,7 @@ const grid = new Grid({
 })
 ```
 
-## 2. 컬럼 모델 정의
+### 1.3 컬럼 모델 정의
 
 - `setColumns()`
 
@@ -98,7 +98,7 @@ const grid = new Grid({
   })
   ```
 
-## 3. 데이터 입력
+### 1.4 데이터 입력
 
 - 컬럼 모델을 정의했다면 Grid에 데이터를 입력 가능
 
@@ -148,8 +148,7 @@ const gridData = [
   grid.resetData(data)
   ```
 
-
-## 4. 소스 코드
+### 1.5 소스 코드
 
 ```html
 <head>
@@ -212,3 +211,43 @@ const gridData = [
 </script>
 ```
 
+## 2. 복합 컬럼
+
+- `header.complexColumns` : 여러 컬럼을 하나의 부모 헤더로 그룹 지음
+  - `name`, `header` 외 추가로 `childNames` 옵션을 가져 기존의 컬럼을 추가
+
+```javascript
+const grid = new tui.Grid({
+    el: document.getElementById('grid'),
+    columns:[
+        {
+            header: 'col1',
+            name: 'col1'
+        },
+        {
+            header: 'col2',
+            name: 'col2'
+        },
+        {
+            header: 'col3',
+            name: 'col3'
+        }
+    ],
+    header: {
+        complexColumns:[
+            {
+                header:'col1 + col2',
+                name: 'parent1',
+                childNames: ['col1', 'col2']
+            },
+            {
+                header: 'col1 + col2 + col3',
+                name: 'parent2',
+                childNames: ['parent1', 'col3']
+            }
+        ]
+    }
+})
+```
+
+![image-20200516165541158](TUI_GRID.assets/image-20200516165541158.png)
