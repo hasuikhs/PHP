@@ -253,3 +253,62 @@ const grid = new tui.Grid({
 ```
 
 ![image-20200516165541158](TUI_GRID.assets/image-20200516165541158.png)
+
+## 3. 커스텀 에디터
+
+### 3.1 내장 에디터
+
+```javascript
+const grid = new Grid({
+  // ...,
+  columns: [
+    {
+      header: 'ID',
+      name: 'id',
+      editor: 'text'
+    },
+    {
+      header: 'PASSWORD',
+      name: 'password',
+      editor: 'password'
+    }
+  ]
+});
+```
+
+- **text** : Text input
+- **password** :  Password input
+- **checkbox** : Check box
+- **radio** : Radio button
+- **select** : Select box
+
+### 3.2 listitems 사용
+
+```javascript
+const columns = [
+  {
+    header: 'BROWSER',
+    name: 'browser',
+    formatter: 'listItemText',
+    editor: {
+      type: 'checkbox',
+      options: {
+        listItems: [
+          { text: 'IE 9', value: 1 },
+          { text: 'IE 10', value: 2 },
+          { text: 'IE 11', value: 3 },
+          { text: 'Firefox', value: 4 },
+          { text: 'Chrome', value: 5 }
+        ]
+      }
+    }        
+  }
+  // ...,
+];
+
+const grid = new Grid({
+  //...options
+  columns  
+});
+```
+
