@@ -312,3 +312,54 @@ const grid = new Grid({
 });
 ```
 
+## 4. 클립보드
+
+> Grid 내의 셀을 포커스 또는 선택한 후 복사하면 셀을 `\t`를 구분자로 사용하여 엑셀에서의 복사 붙여넣기도 가능하게 해줌
+
+### 4.1 copyOptions
+
+```javascript
+import Grid from 'tui-grid';
+
+const grid = new Grid({
+  // ...,
+  copyOptions: {
+    useFormattedValue: true,
+    useListItemText: true,
+    customValue: 'custom'
+  }
+});
+
+// or
+
+const grid = new Grid({
+  // ...,
+  columns: [
+    {
+      name: 'type',
+      editor: 'text',
+      copyOptions: {
+        useFormattedValue: true,
+        useListItem,
+        customValue: (value, rowAttrs, column) => `Column name is ${column.name}`
+      }
+    }
+  ]
+})
+```
+
+| 속성              | 타입            | 동작                                                         |
+| ----------------- | --------------- | ------------------------------------------------------------ |
+| customValue       | string/function | 문자열 또는 함수로 변경된 값을 복사                          |
+| useListItemText   | boolean         | 선택 또는 체크 박스 셀의 값을 listItem의 value가 아닌 text로 복사 |
+| useFormattedValue | boolean         | 셀의 formatter와 함께 텍스트를 복사                          |
+
+### 4.2 copyToClipboard()
+
+- 선택된 포커스 영역을 복사하는 경우 사용
+
+```javascript
+const grid = new Grid ({ ... });
+grid.copyToClipboard();
+```
+
