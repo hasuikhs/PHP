@@ -18,7 +18,6 @@
   <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
   ```
 
-
 ## 1. Grid 기본
 
 ### 1.1 생성하기
@@ -363,3 +362,32 @@ const grid = new Grid ({ ... });
 grid.copyToClipboard();
 ```
 
+## 5. Pagination
+
+- 다음과 같은 순서로 선언해야 오류가 나지않음
+
+  ```html
+  <script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
+  ```
+
+- 옵션 지정
+
+  ```javascript
+  const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: //...
+      bodyHeight: 400,	// 전체 로우의 높이
+      rowHeight: 40,		// 하나의 로우의 높이
+      columns: //...
+      pageOptions: {
+      	useClient: true,
+      	perPage: 10	// 한 페이지에 들어올 페이지 수
+  	},
+      showDummyRows : true	// 지정된 전체 로우의 높이와 perPage에 따라 비어있는 칸을 만듦
+                          	// 한 페이지에 10개가 들어올 수 있지만 실제 데이터가 8개일때 8칸을 채우고 나머지 2칸을 빈칸으로 채워줌
+  })
+  ```
