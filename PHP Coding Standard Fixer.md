@@ -2,9 +2,9 @@
 
 - PSR-1과 PSR-2에 맞게 코딩 스타일을 교정
 
-# 0. PSR(PHP Standard Recommendation)
+## 0. PSR(PHP Standard Recommendation)
 
-## 0.1 PSR-0
+### 0.1 PSR-0
 
 - autoloader를 통해 클래스를 손쉽게 로딩 가능케 하는 표준
 - PSR-4가 제정되면서 무효화
@@ -32,7 +32,7 @@
 
 - 클래스 내 메소드의 이름은 반드시 camelCase를 사용할 것
 
-## 0.3 PSR-2
+### 0.3 PSR-2
 
 > PSR-1 표준의 연장선으로 가독성이 좋도록 더욱 구체적인 코딩 스타일을 가이드
 
