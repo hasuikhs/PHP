@@ -196,10 +196,15 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
           $strCellPos = $aColumns[$i].$curRow;
           $val = $oSheet->getCell($strCellPos)->getValue();
           
-          if($i == 1) {	// 첫번째 열 날짜 처리 필요
+          if ($i == 1) {	// 첫번째 열 날짜 처리 필요
               $val = fromExcelToLinux($val);
               $val = date('Y-m-d', $val);
           }
+          
+          if (strstr($val, '=')) {
+              $val = $oSheet->getCell($strCellpos)->getCalculatedOldValue();
+          }
+          
           $aData[] = $val;
       }
       $aDataValues[] = $aData;
@@ -211,19 +216,19 @@ echo "highestRow : " . $highestRow ."\t highestColumn : ". $highestColumn. PHP_E
 
   ```
   ...
-  [16] =>
+  [0] =>
     array(3) {
       [0] =>
-      string(10) "2020-01-17"
+      string(10) "2020-01-01"
       [1] =>
-      string(20) "=RANDBETWEEN(0, 100)"	
+      string(20) "10"	
       [2] =>
-      string(20) "=RANDBETWEEN(0, 100)"
+      string(20) "24"
     }
   }
   ```
-  
-  - 엑셀의 함수 값을 숫자 값으로 바꾸려면 해당 범위나 값을`F2` 누르고 `F9`를 누르면 원하는 값으로 변환이 된다.
+
+  - 엑셀의 함수 값을 숫자 값으로 바꾸려면 `getCalculatedOldValue()` 함수 사용
 
 ### 2.7 SQL Data화 하기
 
