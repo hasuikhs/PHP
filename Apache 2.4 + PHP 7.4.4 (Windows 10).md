@@ -46,7 +46,9 @@
 
 - [PHP 7.4.4 다운로드](https://windows.php.net/download/)
   
-- Binaries and sources Releases에서 원하는 버전, 비트, Thread safe 후 Zip 파일 다운로드
+- Binaries and sources Releases에서 원하는 버전, 비트, None Thread Safe 후 Zip 파일 다운로드
+  
+  - **FastCGI 방식으로 구동할 것이기 때문에 None Thread Safe**
   
 - 원하는 설치 경로에 압축 해제
 
