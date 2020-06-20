@@ -115,8 +115,18 @@ include __DIR__ . '/./include/inc.common.php';
 </body>
 ```
 
-
 ## 4. `function.js`
+
+- c3에 들어가는 데이터의 형태는 다음과 같음
+
+  ```json
+  {
+      "x" : ["x", "2020-01-01", "2020-01-02"],
+      "impr" : ["impr", "1000", "2000"],
+      "click" : ["click", "500", "1000"],
+      ...
+  }
+  ```
 
 - chart를 그려주는 함수
 
@@ -198,6 +208,4 @@ echo json_encode($aData);
 
 - 위의 `ajax`에서 보낸 파라미터들을 `$_GET`으로 받음
 - 결과를 `echo`로  `ajax`의 `done`으로 `data`로 보냄
-
-
 
