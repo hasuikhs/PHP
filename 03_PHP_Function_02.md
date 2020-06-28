@@ -84,7 +84,7 @@
 ?>
 ```
 
-![image-20200305173634110](C:\Bitnami\wampstack-7.3.15-0\apache2\htdocs\02_PHP_Fuction.assets\image-20200305173634110.png)
+![image-20200305173634110](03_PHP_Function_02.assets/image-20200305173634110.png)
 
 ## 06. header()
 
