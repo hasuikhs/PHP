@@ -18,6 +18,8 @@
 
 ## 2. XDebug
 
+- 설정 전에 자신이 쓰고 있는 PHP 폴더가 맞는지 꼭 확인
+
 - [https://xdebug.org/wizard](https://xdebug.org/wizard)에 자신의 `phpinfo()`가 출력하는 모든 정보(`ctrl + a`)를 입력
 
   - 다운로드 링크를 눌러 dll 다운로드
@@ -28,7 +30,7 @@
 
     ```
     [XDebug]
-    zend_extension = "PHP루트\ext\php_xdebug-2.9.2-7.3-vc15-nts-x86_64.dll"
+    zend_extension = PHP루트\ext\php_xdebug-2.9.2-7.3-vc15-nts-x86_64.dll
     xdebug.remote_enable = 1
     xdebug.remote_autostart = 1
     ```
