@@ -24,9 +24,17 @@
 
 ### 1.1 설치
 
-```bash
-$ composer require phpoffice/phpspreadsheet
-```
+- PHP 7.0 버전 이전
+
+  ```bash
+  $ composer require phpoffice/phpspreadsheet:1.9.0
+  ```
+
+- PHP 7.1 버전 이후
+
+  ```bash
+  $ composer require phpoffice/phpspreadsheet
+  ```
 
 ### 1.2 사용
 
