@@ -542,7 +542,103 @@ class DBMapper
 
 ## 5. 파일 만들기
 
+### 5.1 Spreadsheet 객체 생성
 
+- PHP Spreadsheet는 Spreadsheet 객체를 생성하면 **Worksheet라는 이름을 가진 sheet를 기본으로 생성**
+
+  ```php
+  $spreadsheet = new Spreadsheet();
+  ```
+
+- sheet 불러오기
+
+  ```php
+  $sheet = $spreadsheet->getSheetName('sheet name');
+  
+  $sheet = $spreadsheet->getSheetIndex('sheet index');
+  ```
+
+- sheet명 setting
+
+  ```php
+  $spreadsheet->getSheetName('sheet name')->setTitle('new sheet name');
+  ```
+
+### 5.2 Cell Value 입력
+
+```php
+$shet->setCellValue('cell name', value);
+```
+
+### 5.3 Cell Style
+
+- Cell Style 불러오기
+
+  ```php
+  $cellStyle = $sheet>getStyle('cell name');
+  ```
+
+- font 설정
+
+  - font style
+
+    ```php
+    $cellStyle->getFont()->setName('font name');
+    ```
+
+  - font color
+
+    ```php
+    $cellStyle->getFont()->setRGB('rgb color');
+    ```
+
+  - font size
+
+    ```php
+    $cellStyle->getFont()->setSize(size);
+    ```
+
+- cell background color
+
+  ```php
+  $cellStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('rgb color');
+  ```
+  
+- cell alignment
+  
+  ```php
+  $cellStyle->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+  ```
+  
+- cell border
+  
+  ```php
+  $borderStyle = $cellStyle->getBorders();
+  $borderStyle->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+  $borderStyle->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+  $borderStyle->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+  $borderStyle->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+  ```
+  
+- cell width
+  
+  ```php
+  $sheet->getColumnDimension('B')->setWidth(size);
+  ```
+  
+### 5.4 파일 저장
+
+```php
+$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($oSpreadsheet, 'Xlsx');
+
+$writer->save(file path);
+```
+
+
+
+  
+
+  
 
 
 
