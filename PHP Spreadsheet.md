@@ -27,7 +27,7 @@
 - PHP 7.0 버전 이전
 
   ```bash
-  $ composer require phpoffice/phpspreadsheet:1.9.0
+  $ composer require phpoffice/phpspreadsheet:1.8.2
   ```
 
 - PHP 7.1 버전 이후
