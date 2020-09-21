@@ -602,6 +602,9 @@ $shet->setCellValue('cell name', value);
 
   ```php
   $cellStyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('rgb color');
+  
+  // 투명색
+  $cellstyle->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_NONE);
   ```
   
 - cell alignment
@@ -619,6 +622,25 @@ $shet->setCellValue('cell name', value);
   $borderStyle->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
   $borderStyle->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
   ```
+  
+- cell comment(memo)
+  
+  ```php
+  $sheet->getComment($strCellPos)->getText()->createTextRun('text');
+  ```
+  
+  - remove cell comment
+  
+    ```php
+    // sheet 오픈 초기
+    $comments = $sheet->getComments();
+    
+    // cell 단위 접근
+    if (isset($comments[$strCellPos])) {
+        unset($comments[$strCellPos]);
+        $sheet->setComments($comments);
+    }
+    ```
   
 - cell width
   
