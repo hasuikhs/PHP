@@ -373,8 +373,6 @@ $curRow = 3;
 
 $oParser = new ExcelParserPrototype($excelFileName, new DBMapper());
 $oParser->parse();
-
-?>
 ```
 
 ### 4.2 Util
@@ -393,8 +391,6 @@ function makeColumns() {
 function fromExcelToLinux($excel_time){
     return ($excel_time - 25569) * 86400;
 }
-
-?>
 ```
 
 ### 4.3 Excel Parsing Class
@@ -441,36 +437,35 @@ function parse() {
 ##### 4.3.3.2 시트 배열화 - parseSummary(`$oSheet`)
 
 ```php
-    function parseSummary($oSheet) {
-        global $aColumns, $hColumns, $curRow;
+function parseSummary($oSheet) {
+    global $aColumns, $hColumns, $curRow;
 
-        $aDataHeader = array();
-        $highestRow = $oSheet->getHighestRow();
-        $highestColumn = $oSheet->getHighestColumn();
+    $aDataHeader = array();
+    $highestRow = $oSheet->getHighestRow();
+    $highestColumn = $oSheet->getHighestColumn();
 
-        $maxIndex = $hColumns[$highestColumn];
+    $maxIndex = $hColumns[$highestColumn];
+    $aDataHeader = $this->getColumns($oSheet, $maxIndex);
 
-        $aDataHeader = $this->getColumns($oSheet, $maxIndex);
+    $aDataValues = array();
+    $curRow++;
 
-        $aDataValues = array();
-        $curRow++;
-
-        while ($curRow <= $highestRow) {
-            $aData = array();
-            for ($i = 1; $i <= $maxIndex; $i++) {
-                $strCellPos = $aColumns[$i] . $curRow;
-                $val = $oSheet->getCell($strCellPos)->getValue();
-                if ($i == 1) {
-                    $val = fromExcelToLinux($val);
-                    $val = date('Y-m-d', $val);
-                }
-                $aData[] = $val;
+    while ($curRow <= $highestRow) {
+        $aData = array();
+        for ($i = 1; $i <= $maxIndex; $i++) {
+            $strCellPos = $aColumns[$i] . $curRow;
+            $val = $oSheet->getCell($strCellPos)->getValue();
+            if ($i == 1) {
+                 $val = fromExcelToLinux($val);
+                $val = date('Y-m-d', $val);
             }
-            $aDataValues[] = $aData;
-            $curRow++;
+            $aData[] = $val;
         }
-        $this->InsertSummary($aDataHeader, $aDataValues);
+        $aDataValues[] = $aData;
+        $curRow++;
     }
+    $this->InsertSummary($aDataHeader, $aDataValues);
+}
 ```
 
 ##### 4.3.3.3 getColumns(`$oSheet`, `$maxIndex`)
@@ -536,8 +531,6 @@ class DBMapper
         $this->db->query($query);
     }
 }
-
-?>
 ```
 
 ## 5. 파일 만들기
@@ -610,6 +603,7 @@ $shet->setCellValue('cell name', value);
 - cell alignment
   
   ```php
+  // 가운데 정렬
   $cellStyle->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
   ```
   
@@ -617,6 +611,7 @@ $shet->setCellValue('cell name', value);
   
   ```php
   $borderStyle = $cellStyle->getBorders();
+  // BORDER_THICK은 테두리 선의 굵기를 굵게
   $borderStyle->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
   $borderStyle->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
   $borderStyle->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
